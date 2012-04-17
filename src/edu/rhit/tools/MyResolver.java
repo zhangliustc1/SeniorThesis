@@ -155,7 +155,7 @@ public class MyResolver {
 		}else if(i == 2){
 			return extraction[0] + " :::: " + extraction[1];
 		}else{
-			System.out.println("Error: bad value for i in getOthers");
+			System.out.println("Error: bad value for i in getPropstring");
 			return "ERROR";
 			
 		}
@@ -190,20 +190,20 @@ public class MyResolver {
 			// Clean text.
 			String c0 = cleanText(extraction[0]);
 			String c1 = cleanText(extraction[1]);
-			String c2 = cleanText(extraction[2]);
+			//ARTIFICIAL: String c2 = cleanText(extraction[2]);
 			
 			cleanToDirty.put(c0, extraction[0]);
 			cleanToDirty.put(c1, extraction[1]);
-			cleanToDirty.put(c2, extraction[2]);
+			//ARTIFICIAL: cleanToDirty.put(c2, extraction[2]);
 			
 			// Each extraction is of the form (obj, rel, obj)
 			S.add(c0);
 			S.add(c1);
-			S.add(c2);
+			//ARTIFICIAL: S.add(c2);
 
 			// So we have a record of what is what.
 			Objects.add(c0);
-			Objects.add(c2);
+			//ARTIFICIAL: Objects.add(c2);
 			Relations.add(c1);
 
 		}
@@ -229,7 +229,7 @@ public class MyResolver {
 //		HashMap<Tuple, Double> Scores = calculateScores(Cluster, E, Elements);
 		TreeMap<Tuple, Double> Scores = calculateScores(Cluster, E, Elements);
 
-		// This number is consistent
+		// This number is consistent finally!
 		System.out.println(Scores.size());
 
 		// 5. Repeat until no merges can be performed.
@@ -415,12 +415,14 @@ public class MyResolver {
 			cleanExtraction[1] = cleanText(extraction[1]);
 			cleanExtraction[2] = cleanText(extraction[2]);
 			
+			Runtime r = Runtime.getRuntime();
+			System.out.println(r.totalMemory());
 			
 			// Part 1
 			putIndexProperty(Index, Cluster, cleanExtraction, 1, 2, 0);
 
 			// Part 2
-			putIndexProperty(Index, Cluster, cleanExtraction, 0, 1, 2);
+			//ARTIFICIAL: putIndexProperty(Index, Cluster, cleanExtraction, 0, 1, 2);
 
 			// Part 3
 			putIndexProperty(Index, Cluster, cleanExtraction, 0, 2, 1);
@@ -434,8 +436,7 @@ public class MyResolver {
 		lastPercent = 0;
 
 		// 4. For each property p in Index
-		System.out.println("\nStep 4 "
-				+ "===========================================");
+		System.out.println("\nStep 4 " + "===========================================");
 		// This loop is too slow
 		for (Map.Entry<String, ArrayList<Integer>> entry : Index.entrySet()) {
 			// String property = entry.getKey();
@@ -500,6 +501,7 @@ public class MyResolver {
 		Index.put(property1, new ArrayList<Integer>(val1));
 	}
 
+	
 	public int produceOutput(HashSet<Cluster> clusters, String outfile) {
 		// This will write the lines to a file.
 		try {
@@ -673,11 +675,12 @@ public class MyResolver {
 		boolean soundex = false;
 
 		
-		double t = 0.7;
+		double t = 0.4;
 		runMyResolver(t, "ssm", soundex);
+		runMyResolver(t+0.1, "ssm", soundex);
 		
-//		for (double thresh = 0.4; thresh < 1; thresh += 0.1) {
-//			runMyResolver(thresh, "comb", soundex);
+//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+//			runMyResolver(thresh, "ssm", soundex);
 //		}
 
 	}
