@@ -31,12 +31,13 @@ public class MyResolver {
 
 	
 
-	public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
+    //    public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
+    public static String workdir = "/Users/stu2009/mayhewsw/SeniorThesis/";
 
 	// This variable decides on the data set. It is necessary
 	// because there are various changes to the code if it 
 	// is set
-	private static boolean artificial = false;
+	private static boolean artificial = true;
 	
 	public static String infile = artificial ? workdir + "justgoldArtificial.txt" : workdir + "justgold.txt";
 
