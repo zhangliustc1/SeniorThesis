@@ -31,8 +31,8 @@ public class MyResolver {
 
 	
 
-    //    public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
-    public static String workdir = "/Users/stu2009/mayhewsw/SeniorThesis/";
+    public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
+    //public static String workdir = "/Users/stu2009/mayhewsw/SeniorThesis/";
 
 	// This variable decides on the data set. It is necessary
 	// because there are various changes to the code if it 
@@ -314,6 +314,10 @@ public class MyResolver {
 					if (this.mutrec){
 						// Merge properties containing c1 and c2
 						// There should be fewer properties after this step
+						
+						// Try: data structure similar to: Cluster, Elements structures.
+						// P_el = (prop  : id)
+						this.mutrec = false;
 						
 					}
 				}
