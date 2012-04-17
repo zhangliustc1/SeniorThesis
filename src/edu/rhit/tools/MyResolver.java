@@ -34,18 +34,18 @@ public class MyResolver {
 	public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
 
 
-	public static String infile = workdir + "justgold.txt";
-	//public static String infile = workdir + "justgoldArtificial.txt";
+//	public static String infile = workdir + "justgold.txt";
+	public static String infile = workdir + "justgoldArtificial.txt";
 
 
 	public static String objhypfile = workdir + "hyp_obj_new_clusters7.txt";
 	public static String relhypfile = workdir + "hyp_rel_new_clusters7.txt";
 
-	public static String objgoldfile = workdir + "yates_gold_objects.txt";
-	public static String relgoldfile = workdir + "yates_gold_relations.txt";
+//	public static String objgoldfile = workdir + "yates_gold_objects.txt";
+//	public static String relgoldfile = workdir + "yates_gold_relations.txt";
 
-//	public static String objgoldfile = workdir + "object_scoring_clusters_artificial.txt";
-//	public static String relgoldfile = workdir + "relation_scoring_clusters_artificial.txt";
+	public static String objgoldfile = workdir + "object_scoring_clusters_artificial.txt";
+	public static String relgoldfile = workdir + "relation_scoring_clusters_artificial.txt";
 
 	
 	public static String sep = " :::: ";
