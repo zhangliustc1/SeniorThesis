@@ -33,19 +33,18 @@ public class MyResolver {
 
 	public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
 
-
-//	public static String infile = workdir + "justgold.txt";
-	public static String infile = workdir + "justgoldArtificial.txt";
-
+	// This variable decides on the data set. It is necessary
+	// because there are various changes to the code if it 
+	// is set
+	private static boolean artificial = false;
+	
+	public static String infile = artificial ? workdir + "justgoldArtificial.txt" : workdir + "justgold.txt";
 
 	public static String objhypfile = workdir + "hyp_obj_new_clusters7.txt";
 	public static String relhypfile = workdir + "hyp_rel_new_clusters7.txt";
 
-//	public static String objgoldfile = workdir + "yates_gold_objects.txt";
-//	public static String relgoldfile = workdir + "yates_gold_relations.txt";
-
-	public static String objgoldfile = workdir + "object_scoring_clusters_artificial.txt";
-	public static String relgoldfile = workdir + "relation_scoring_clusters_artificial.txt";
+	public static String objgoldfile = artificial ? workdir + "object_scoring_clusters_artificial.txt" : workdir + "yates_gold_objects.txt";
+	public static String relgoldfile = artificial ? workdir + "relation_scoring_clusters_artificial.txt" : workdir + "yates_gold_relations.txt";
 
 	
 	public static String sep = " :::: ";
@@ -59,8 +58,6 @@ public class MyResolver {
 	public boolean Soundex;
 	
 	public boolean mutrec = true;
-	
-	private double myThresh;
 
 	private int numMerges = 1;
 	private boolean stopwordRemove = false;
@@ -164,8 +161,6 @@ public class MyResolver {
 	// This is copied almost exactly out of the paper. pp269.
 	public int ClusterAlgorithm(double threshold) {
 
-		this.myThresh = threshold;
-		
 		// E is all assertions. Array? Arraylist? of String [] ? Only need to
 		// iterate. No insert or delete
 		ArrayList<String[]> E = getData(infile);
@@ -190,20 +185,31 @@ public class MyResolver {
 			// Clean text.
 			String c0 = cleanText(extraction[0]);
 			String c1 = cleanText(extraction[1]);
-			//ARTIFICIAL: String c2 = cleanText(extraction[2]);
+			String c2 = "";
+			if(! artificial){
+				c2 = cleanText(extraction[2]);
+			}
 			
 			cleanToDirty.put(c0, extraction[0]);
 			cleanToDirty.put(c1, extraction[1]);
-			//ARTIFICIAL: cleanToDirty.put(c2, extraction[2]);
-			
+			if(! artificial){
+				cleanToDirty.put(c2, extraction[2]);
+			}
+
 			// Each extraction is of the form (obj, rel, obj)
 			S.add(c0);
 			S.add(c1);
-			//ARTIFICIAL: S.add(c2);
+			if(! artificial){
+				S.add(c2);
+			}
+
 
 			// So we have a record of what is what.
 			Objects.add(c0);
-			//ARTIFICIAL: Objects.add(c2);
+			if(! artificial){
+				Objects.add(c2);
+			}
+
 			Relations.add(c1);
 
 		}
@@ -307,6 +313,7 @@ public class MyResolver {
 					if (this.mutrec){
 						// Merge properties containing c1 and c2
 						// There should be fewer properties after this step
+						
 					}
 				}
 				count++;
@@ -415,15 +422,17 @@ public class MyResolver {
 			cleanExtraction[1] = cleanText(extraction[1]);
 			cleanExtraction[2] = cleanText(extraction[2]);
 			
-			Runtime r = Runtime.getRuntime();
-			System.out.println(r.totalMemory());
+//			Runtime r = Runtime.getRuntime();
+//			System.out.println(r.totalMemory());
 			
 			// Part 1
 			putIndexProperty(Index, Cluster, cleanExtraction, 1, 2, 0);
 
 			// Part 2
-			//ARTIFICIAL: putIndexProperty(Index, Cluster, cleanExtraction, 0, 1, 2);
-
+			if (! artificial){
+				putIndexProperty(Index, Cluster, cleanExtraction, 0, 1, 2);
+			}
+				
 			// Part 3
 			putIndexProperty(Index, Cluster, cleanExtraction, 0, 2, 1);
 		}
