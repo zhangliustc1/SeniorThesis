@@ -281,7 +281,7 @@ public class MyResolver {
 			double currScore;
 			
 			for (Tuple currTup : sortedScores) {
-
+				
 				// Get top pair (currTup)
 				currScore = Scores.get(currTup);
 
@@ -299,6 +299,10 @@ public class MyResolver {
 				String c1String = currTup.s1;
 				String c2String = currTup.s2;
 
+				if (c1String.contains("lacks") || c2String.contains("lacks")){
+					System.out.println("OK...");
+				}
+				
 				// These are now soundex strings (as cluster IDs)
 				Sndx c1 = Cluster.get(c1String);
 				Sndx c2 = Cluster.get(c2String);
@@ -428,7 +432,8 @@ public class MyResolver {
 		System.out.println("Step 2");
 		TreeMap<Tuple, Double> Scores = new TreeMap<Tuple, Double>();
 
-		// Index is a HashMap
+		// Index is a HashMap (note that the key value is a property, which in 
+		// this case is defined as a concatenated soundex string. 
 		TreeMap<String, ArrayList<Sndx>> Index = new TreeMap<String, ArrayList<Sndx>>();
 
 		// For tracking progress
@@ -500,7 +505,10 @@ public class MyResolver {
 			}
 			count++;
 
-			if (propList.size() < Max) {
+//			System.out.println(entry.getKey());
+//			System.out.println(entry.getValue());
+			
+			if (propList.size() > 1 && propList.size() < Max) {
 				ArrayList<Tuple> allPairs = getPairs(propList, Elements);
 				// For each pair in propList
 				// System.out.println(allPairs.size());
