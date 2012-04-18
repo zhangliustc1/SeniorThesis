@@ -56,7 +56,7 @@ public class MyResolver {
 	private HashSet<String> Relations;
 
 	public String method;
-	public boolean Soundex;
+	//public boolean Soundex;
 	
 	HashMap<String, HashSet<String>> propCounts;
 	
@@ -70,7 +70,7 @@ public class MyResolver {
 
 	public MyResolver(String method, boolean Soundex) {
 		this.method = method;
-		this.Soundex = Soundex;
+		//this.Soundex = Soundex;
 	}
 
 	public ArrayList<String[]> getData(String clusterFilename) {
@@ -102,7 +102,7 @@ public class MyResolver {
 				// String a = getKeyFromValue(Cluster, propList.get(i));
 				// String b = getKeyFromValue(Cluster, propList.get(j));
 
-				// NOTE NOTE NOTE: use the first string in the array for
+				// FIXME: use the first string in the array for
 				// comparisons.
 				// Is this wise? I'm not sure
 				String a = Elements.get(propList.get(i)).get(0);
@@ -167,7 +167,7 @@ public class MyResolver {
 		// E is all assertions. Array? Arraylist? of String [] ? Only need to
 		// iterate. No insert or delete
 		ArrayList<String[]> E = getData(infile);
-
+		
 		System.out.println("\nGetting propcounts...");
 		this.propCounts = getPropApply(E);
 		
@@ -222,14 +222,15 @@ public class MyResolver {
 		TreeMap<String, String> Cluster = new TreeMap<String, String>();
 		TreeMap<String, ArrayList<String>> Elements = new TreeMap<String, ArrayList<String>>();
 		
-		// This is the initial clusterID
-		//int clusterid = 100;
+		// Now using Soundex as Cluster ID
 		RefinedSoundex rs = new RefinedSoundex();
 		
 		// 1. For each s in S: (I hate Java. What a stupid way to use lists.)
 		System.out.println("Step 1");
 		for (String s : S) {
 			// System.out.println(s + ", " + clusterid);
+			
+			// FYI: little s is cleaned (see above)
 			Cluster.put(s, rs.encode(s));
 			ArrayList<String> elList = new ArrayList<String>();
 			elList.add(s);
@@ -367,6 +368,19 @@ public class MyResolver {
 		return 0;
 	}
 
+	// Not convinced this can work. Will work on this later...
+	// One stop shop for cleaning. (probably put into cleantodirty)
+	// TODO: can this work?
+	private ArrayList<String[]> cleanAllExtractions(ArrayList<String[]> E) {
+		ArrayList<String [] > newE = new ArrayList<String []>();
+		
+		for (String [] s : E){
+			
+		}
+		
+		return null;
+	}
+
 	private String cleanText(String s) {
 		// remove spaces, and punctuation
 		// set to lower
@@ -424,7 +438,7 @@ public class MyResolver {
 
 			// For this section, we just need all combinations of the first two
 			// integers passed in.
-
+ 
 			String [] cleanExtraction = new String[3];
 			cleanExtraction[0] = cleanText(extraction[0]);
 			cleanExtraction[1] = cleanText(extraction[1]);
@@ -498,17 +512,14 @@ public class MyResolver {
 			TreeMap<String, String> Cluster, String[] extraction, int a,
 			int b, int c) {
 		TreeSet<String> val1 = new TreeSet<String>();
-		String property1 = extraction[a] + sep + extraction[b];
-		
-//		// Add Soundex stuff here.
-//		if (this.Soundex){
-//			RefinedSoundex rs = new RefinedSoundex();
-//			property1 = rs.encode(property1); // convert prop 1 to a soundex string
-//		}
-		
+			
+		// WOOT. Big Mutual Recursion step right here. Just a string concatenation of
+		// the cluster ids. 
+		String property1 = Cluster.get(extraction[a]) + Cluster.get(extraction[b]); 
+	
 		val1.add(Cluster.get(extraction[c]));
 
-		// Also add whatever was already in Index[property]
+		// Also add whatever was already in Index[property] (at this point, those are Soundex strings)
 		ArrayList<String> ip = Index.get(property1);
 		if (ip != null) {
 			val1.addAll(ip);
@@ -653,9 +664,9 @@ public class MyResolver {
 		System.out.println("===== With Threshold: " + thresh + " ========");
 		System.out.print("Using method: " + method);
 		MyResolver m = new MyResolver(method, Soundex);
-		if(m.Soundex){
-			System.out.print(" + Soundex");
-		}
+//		if(m.Soundex){
+//			System.out.print(" + Soundex");
+//		}
 		
 		if(m.stopwordRemove){
 			System.out.print(" + Stopword removal");
