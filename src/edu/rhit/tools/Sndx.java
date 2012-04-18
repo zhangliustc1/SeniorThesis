@@ -22,6 +22,14 @@ public class Sndx implements Comparable<Sndx> {
 
 	@Override
 	public int compareTo(Sndx arg0) {
+
 		return soundex.compareTo(arg0.getSoundex());
 	}
+
+	@Override
+	public String toString() {
+		return soundex;
+	}
+	
+	
 }

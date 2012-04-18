@@ -182,8 +182,10 @@ public class MyResolver {
 		// iterate. No insert or delete
 		ArrayList<String[]> E = getData(infile);
 		
-		System.out.println("\nGetting propcounts...");
+	
+		System.out.println("\nGetting propcounts ===============================");
 		this.propCounts = getPropApply(E);
+		System.out.println();
 		
 		// S is each unique relation or object. Hashset<String>?
 		HashSet<String> S = new HashSet<String>();
@@ -317,6 +319,9 @@ public class MyResolver {
 					// Update clusters (loop)
 					for (String s : c2elems) {
 						// This is replacing, not adding
+						if (! Cluster.containsKey(s)){
+							System.out.println("Cluster problem");
+						}
 						Cluster.put(s, c1);
 					}
 
@@ -525,6 +530,8 @@ public class MyResolver {
 			int b, int c) {
 		TreeSet<Sndx> val1 = new TreeSet<Sndx>();
 			
+		// previously, property was: "extraction[a] + sep + extraction[b]"
+		
 		// WOOT. Big Mutual Recursion step right here. Just a string concatenation of
 		// the cluster ids. 
 		String property1 = Cluster.get(extraction[a]) + " : " + Cluster.get(extraction[b]); 
