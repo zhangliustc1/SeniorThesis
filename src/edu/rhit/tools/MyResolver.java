@@ -93,8 +93,8 @@ public class MyResolver {
 	 * 8} out: {(3, 5), (3, 8), (5, 8)} except each integer in each pair is the
 	 * associated string as decided by the elements in Cluster
 	 */
-	private ArrayList<Tuple> getPairs(ArrayList<String> propList,
-			TreeMap<String, ArrayList<String>> Elements) {
+	private ArrayList<Tuple> getPairs(ArrayList<Sndx> propList,
+			TreeMap<Sndx, ArrayList<String>> Elements) {
 		ArrayList<Tuple> allPairs = new ArrayList<Tuple>();
 		for (int i = 0; i < propList.size(); i++) {
 			for (int j = i + 1; j < propList.size(); j++) {
@@ -233,11 +233,11 @@ public class MyResolver {
 
 		}
 
-		TreeMap<String, String> Cluster = new TreeMap<String, String>();
-		TreeMap<String, ArrayList<String>> Elements = new TreeMap<String, ArrayList<String>>();
+		TreeMap<String, Sndx> Cluster = new TreeMap<String, Sndx>();
+		TreeMap<Sndx, ArrayList<String>> Elements = new TreeMap<Sndx, ArrayList<String>>();
 		
 		// Now using Soundex as Cluster ID
-		RefinedSoundex rs = new RefinedSoundex();
+		//RefinedSoundex rs = new RefinedSoundex();
 		
 		// 1. For each s in S: (I hate Java. What a stupid way to use lists.)
 		System.out.println("Step 1");
@@ -245,7 +245,7 @@ public class MyResolver {
 			// System.out.println(s + ", " + clusterid);
 			
 			// FYI: little s is cleaned (see above)
-			Cluster.put(s, rs.encode(s));
+			Cluster.put(s, new Sndx(s));
 			ArrayList<String> elList = new ArrayList<String>();
 			elList.add(s);
 			Elements.put(Cluster.get(s), elList);
@@ -268,7 +268,7 @@ public class MyResolver {
 			
 			ArrayList<Tuple> sortedScores = sortByValueArray(Scores);
 
-			HashSet<String> usedclusters = new HashSet<String>();
+			HashSet<Sndx> usedclusters = new HashSet<Sndx>();
 
 //			 for (int y = 0; y < 10; y++){
 //				 System.out.println(sortedScores.get(y) + ", " +
@@ -298,8 +298,8 @@ public class MyResolver {
 				String c2String = currTup.s2;
 
 				// These are now soundex strings (as cluster IDs)
-				String c1 = Cluster.get(c1String);
-				String c2 = Cluster.get(c2String);
+				Sndx c1 = Cluster.get(c1String);
+				Sndx c2 = Cluster.get(c2String);
 
 				// if not in usedclusters...
 				if (!usedclusters.contains(c1) && !usedclusters.contains(c2)) {
@@ -357,7 +357,7 @@ public class MyResolver {
 		HashSet<Cluster> objclusters = new HashSet<Cluster>();
 		HashSet<Cluster> relclusters = new HashSet<Cluster>();
 
-		for (Entry<String, ArrayList<String>> e : Elements.entrySet()) {
+		for (Entry<Sndx, ArrayList<String>> e : Elements.entrySet()) {
 			Cluster c = new Cluster();
 			for (String s : e.getValue()) {
 				// Here is where we would access the dictionary
@@ -415,8 +415,8 @@ public class MyResolver {
 	 * This is steps 2 - 4
 	 */
 	public TreeMap<Tuple, Double> calculateScores(
-			TreeMap<String, String> Cluster, ArrayList<String[]> E,
-			TreeMap<String, ArrayList<String>> Elements) {
+			TreeMap<String, Sndx> Cluster, ArrayList<String[]> E,
+			TreeMap<Sndx, ArrayList<String>> Elements) {
 		// This accepts Cluster and element. It changes neither of them.
 		// Returns scores
 		// 2. Scores is a list, (HashMap?)
@@ -424,7 +424,7 @@ public class MyResolver {
 		TreeMap<Tuple, Double> Scores = new TreeMap<Tuple, Double>();
 
 		// Index is a HashMap
-		TreeMap<String, ArrayList<String>> Index = new TreeMap<String, ArrayList<String>>();
+		TreeMap<String, ArrayList<Sndx>> Index = new TreeMap<String, ArrayList<Sndx>>();
 
 		// For tracking progress
 		float elen = E.size();
@@ -480,11 +480,11 @@ public class MyResolver {
 		// 4. For each property p in Index
 		System.out.println("\nStep 4 " + "===========================================");
 		// This loop is too slow
-		for (Map.Entry<String, ArrayList<String>> entry : Index.entrySet()) {
+		for (Map.Entry<String, ArrayList<Sndx>> entry : Index.entrySet()) {
 			// String property = entry.getKey();
 
 			// This is a list of clusterIDs
-			ArrayList<String> propList = entry.getValue();
+			ArrayList<Sndx> propList = entry.getValue();
 			Collections.sort(propList);
 
 			// For tracking progress
@@ -520,10 +520,10 @@ public class MyResolver {
 	 * property. For example, if the extraction is: (mars, lacks, ozone layer)
 	 * and a = 1, b = 2, then the property would be (lacks, ozone layer).
 	 */
-	private void putIndexProperty(TreeMap<String, ArrayList<String>> Index,
-			TreeMap<String, String> Cluster, String[] extraction, int a,
+	private void putIndexProperty(TreeMap<String, ArrayList<Sndx>> Index,
+			TreeMap<String, Sndx> Cluster, String[] extraction, int a,
 			int b, int c) {
-		TreeSet<String> val1 = new TreeSet<String>();
+		TreeSet<Sndx> val1 = new TreeSet<Sndx>();
 			
 		// WOOT. Big Mutual Recursion step right here. Just a string concatenation of
 		// the cluster ids. 
@@ -532,12 +532,12 @@ public class MyResolver {
 		val1.add(Cluster.get(extraction[c]));
 
 		// Also add whatever was already in Index[property] (at this point, those are Soundex strings)
-		ArrayList<String> ip = Index.get(property1);
+		ArrayList<Sndx> ip = Index.get(property1);
 		if (ip != null) {
 			val1.addAll(ip);
 		}
 
-		Index.put(property1, new ArrayList<String>(val1));
+		Index.put(property1, new ArrayList<Sndx>(val1));
 	}
 
 	
