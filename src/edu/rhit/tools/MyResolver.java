@@ -18,8 +18,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.codec.language.RefinedSoundex;
-
 import edu.rhit.cs.cluster.ESPModel;
 import edu.rhit.cs.cluster.WordNetSim;
 import edu.washington.cs.uei.disktable.BasicDiskTable;
@@ -68,9 +66,8 @@ public class MyResolver {
 	// This should be a number between 0 and 1
 	// public static double threshold = 0.3;
 
-	public MyResolver(String method, boolean Soundex) {
+	public MyResolver(String method) {
 		this.method = method;
-		//this.Soundex = Soundex;
 	}
 
 	public ArrayList<String[]> getData(String clusterFilename) {
@@ -237,24 +234,26 @@ public class MyResolver {
 
 		TreeMap<String, Sndx> Cluster = new TreeMap<String, Sndx>();
 		TreeMap<Sndx, ArrayList<String>> Elements = new TreeMap<Sndx, ArrayList<String>>();
-		
-		// Now using Soundex as Cluster ID
-		//RefinedSoundex rs = new RefinedSoundex();
-		
+				
 		// 1. For each s in S: (I hate Java. What a stupid way to use lists.)
 		System.out.println("Step 1");
 		for (String s : S) {
 			// System.out.println(s + ", " + clusterid);
 			
 			// FYI: little s is cleaned (see above)
-			Cluster.put(s, new Sndx(s));
+			Sndx sxs = new Sndx(s);
+			Cluster.put(s, sxs);
 			ArrayList<String> elList = new ArrayList<String>();
+			
+			ArrayList<String> sxsElems = Elements.get(sxs);
+			if (sxsElems != null){
+				elList.addAll(sxsElems);
+			}
 			elList.add(s);
-			Elements.put(Cluster.get(s), elList);
+			Elements.put(sxs, elList); // this will overwrite...
 		}
 
 		// Steps 2 - 4
-//		HashMap<Tuple, Double> Scores = calculateScores(Cluster, E, Elements);
 		TreeMap<Tuple, Double> Scores = calculateScores(Cluster, E, Elements);
 
 		// This number is consistent finally!
@@ -271,11 +270,6 @@ public class MyResolver {
 			ArrayList<Tuple> sortedScores = sortByValueArray(Scores);
 
 			HashSet<Sndx> usedclusters = new HashSet<Sndx>();
-
-//			 for (int y = 0; y < 10; y++){
-//				 System.out.println(sortedScores.get(y) + ", " +
-//						 	Scores.get(sortedScores.get(y)));
-//			 }
 
 			Tuple firstTup = sortedScores.get(0);
 			double currScore;
@@ -336,17 +330,6 @@ public class MyResolver {
 					usedclusters.add(c1);
 					usedclusters.add(c2);
 					
-					// If mutual recursion...
-					// This is all done elsewhere. (Specifically, in putIndexProperty now)
-//					if (this.mutrec){
-//						// Merge properties containing c1 and c2
-//						// There should be fewer properties after this step
-//						
-//						// Try: data structure similar to: Cluster, Elements structures.
-//						// P_el = (prop  : id)
-//						HashSet<String> c1Props = propCounts.get(c1String);
-//						HashSet<String> c2Props = propCounts.get(c2String);
-//					}
 				}
 			}
 			
@@ -687,10 +670,10 @@ public class MyResolver {
 		
 	}
 
-	public static void runMyResolver(double thresh, String method, boolean Soundex){
+	public static void runMyResolver(double thresh, String method){
 		System.out.println("===== With Threshold: " + thresh + " ========");
 		System.out.print("Using method: " + method);
-		MyResolver m = new MyResolver(method, Soundex);
+		MyResolver m = new MyResolver(method);
 //		if(m.Soundex){
 //			System.out.print(" + Soundex");
 //		}
@@ -718,23 +701,18 @@ public class MyResolver {
 		prc.printResults(relgoldfile, relhypfile);
 	}
 	
-	
-
-	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	
-		boolean soundex = false;
 		
-		double t = 0.4;
-		runMyResolver(t, "ssm", soundex);
-		runMyResolver(t+0.1, "ssm", soundex);			
+//		double t = 0.4;
+//		runMyResolver(t, "ssm", soundex);
+//		runMyResolver(t+0.1, "ssm", soundex);			
 		
-//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-//			runMyResolver(thresh, "ssm", soundex);
-//		}
+		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+			runMyResolver(thresh, "ssm");
+		}
 
 	}
 
