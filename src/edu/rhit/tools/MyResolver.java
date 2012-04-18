@@ -123,7 +123,21 @@ public class MyResolver {
 		
 		HashMap<String, HashSet<String>> props = new HashMap<String, HashSet<String>>();
 
+		// For tracking progress
+		float elen = E.size();
+		int prog = 1;
+		int lastPercent = 0;
+		int step = 2;
+		
 		for (String[] extraction : E) {
+			
+			int percent = (int) ((prog / elen) * 100);
+			if (percent - lastPercent >= step) {
+				System.out.print("=");
+				lastPercent = percent;
+			}
+			prog++;
+			
 			for (int i = 0; i < 3; i++) {
 
 				String [] cleanExtraction = new String[3];
@@ -283,6 +297,7 @@ public class MyResolver {
 				String c1String = currTup.s1;
 				String c2String = currTup.s2;
 
+				// These are now soundex strings (as cluster IDs)
 				String c1 = Cluster.get(c1String);
 				String c2 = Cluster.get(c2String);
 
@@ -313,19 +328,16 @@ public class MyResolver {
 					usedclusters.add(c2);
 					
 					// If mutual recursion...
-					if (this.mutrec){
-						// Merge properties containing c1 and c2
-						// There should be fewer properties after this step
-						
-						// Try: data structure similar to: Cluster, Elements structures.
-						// P_el = (prop  : id)
-						HashSet<String> c1Props = propCounts.get(c1String);
-						HashSet<String> c2Props = propCounts.get(c2String);
-
-						
-						
-						
-					}
+					// This is all done elsewhere. (Specifically, in putIndexProperty now)
+//					if (this.mutrec){
+//						// Merge properties containing c1 and c2
+//						// There should be fewer properties after this step
+//						
+//						// Try: data structure similar to: Cluster, Elements structures.
+//						// P_el = (prop  : id)
+//						HashSet<String> c1Props = propCounts.get(c1String);
+//						HashSet<String> c2Props = propCounts.get(c2String);
+//					}
 				}
 			}
 			
@@ -515,7 +527,7 @@ public class MyResolver {
 			
 		// WOOT. Big Mutual Recursion step right here. Just a string concatenation of
 		// the cluster ids. 
-		String property1 = Cluster.get(extraction[a]) + Cluster.get(extraction[b]); 
+		String property1 = Cluster.get(extraction[a]) + " : " + Cluster.get(extraction[b]); 
 	
 		val1.add(Cluster.get(extraction[c]));
 
