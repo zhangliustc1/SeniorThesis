@@ -37,7 +37,7 @@ public class MyResolver {
 	// This variable decides on the data set. It is necessary
 	// because there are various changes to the code if it 
 	// is set
-	private static boolean artificial = true;
+	private static boolean artificial = false;
 	
 	public static String infile = artificial ? workdir + "justgoldArtificial.txt" : workdir + "justgold.txt";
 
@@ -57,6 +57,8 @@ public class MyResolver {
 
 	public String method;
 	public boolean Soundex;
+	
+	HashMap<String, HashSet<String>> propCounts;
 	
 	public boolean mutrec = true;
 
@@ -161,11 +163,14 @@ public class MyResolver {
 
 	// This is copied almost exactly out of the paper. pp269.
 	public int ClusterAlgorithm(double threshold) {
-
+		
 		// E is all assertions. Array? Arraylist? of String [] ? Only need to
 		// iterate. No insert or delete
 		ArrayList<String[]> E = getData(infile);
 
+		System.out.println("\nGetting propcounts...");
+		this.propCounts = getPropApply(E);
+		
 		// S is each unique relation or object. Hashset<String>?
 		HashSet<String> S = new HashSet<String>();
 
@@ -210,7 +215,6 @@ public class MyResolver {
 			if(! artificial){
 				Objects.add(c2);
 			}
-
 			Relations.add(c1);
 
 		}
@@ -246,7 +250,7 @@ public class MyResolver {
 		while (moreMerges) {
 			System.out.println("\nRunning merge iteration " + mergeiter);
 			mergeiter++;
-			// Sort scores. I wonder if this is not accurate.
+			
 			ArrayList<Tuple> sortedScores = sortByValueArray(Scores);
 
 			HashSet<Integer> usedclusters = new HashSet<Integer>();
@@ -258,9 +262,6 @@ public class MyResolver {
 
 			Tuple firstTup = sortedScores.get(0);
 			double currScore;
-			int count = 0;
-			
-			int cutoff = 0;
 			
 			for (Tuple currTup : sortedScores) {
 
@@ -317,11 +318,14 @@ public class MyResolver {
 						
 						// Try: data structure similar to: Cluster, Elements structures.
 						// P_el = (prop  : id)
-						this.mutrec = false;
+						HashSet<String> c1Props = propCounts.get(c1String);
+						HashSet<String> c2Props = propCounts.get(c2String);
+
+						
+						
 						
 					}
 				}
-				count++;
 			}
 			
 			// Repeat steps 2 through 4 to recalculate scores.
@@ -329,7 +333,6 @@ public class MyResolver {
 			Scores = calculateScores(Cluster, E, Elements);
 			
 			System.out.println("\nSizes: " + Cluster.size() + ", " + E.size() + ", " + Elements.size());
-			// FIXME: This is not consistent between runs.
 			System.out.println("Scores: " + Scores.size());
 			
 			if (Scores.size() == 0 || mergeiter == this.numMerges  + 1) {
@@ -442,8 +445,7 @@ public class MyResolver {
 			putIndexProperty(Index, Cluster, cleanExtraction, 0, 2, 1);
 		}
 		
-		System.out.println("\nGetting propcounts...");
-		HashMap<String, HashSet<String>> propCounts = getPropApply(E);
+
 
 		int count = 0;
 		float iline = Index.entrySet().size();
@@ -475,7 +477,7 @@ public class MyResolver {
 				// Get the strings in that pair, get similarity
 				// Store it in Scores
 				for (Tuple t : allPairs) {
-					double getScore = similarity(t, propCounts);
+					double getScore = similarity(t);
 					Scores.put(t, getScore);
 				}
 			}else{
@@ -590,7 +592,7 @@ public class MyResolver {
 		return result;
 	}
 
-	private double similarity(Tuple t, HashMap<String, HashSet<String>> propCounts) {
+	private double similarity(Tuple t) {
 		// SSM
 		//int d = SimpleSSM.LevenshteinDistance(t.s1, t.s2);
 		StringSimilarityModel ssm = new StringSimilarityModel();
@@ -598,9 +600,9 @@ public class MyResolver {
 
 		// ESP
 		HashSet<String> props1 = new HashSet<String>();	
-		props1.addAll(propCounts.get(t.s1));
+		props1.addAll(this.propCounts.get(t.s1));
 		HashSet<String> props2 = new HashSet<String>();
-		props2.addAll(propCounts.get(t.s2));
+		props2.addAll(this.propCounts.get(t.s2));
 				
 		int n1 = props1.size();
 		int n2 = props2.size();
@@ -687,11 +689,10 @@ public class MyResolver {
 	public static void main(String[] args) {
 	
 		boolean soundex = false;
-
 		
 		double t = 0.4;
 		runMyResolver(t, "ssm", soundex);
-		runMyResolver(t+0.1, "ssm", soundex);
+		runMyResolver(t+0.1, "ssm", soundex);			
 		
 //		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
 //			runMyResolver(thresh, "ssm", soundex);
