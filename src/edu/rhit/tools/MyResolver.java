@@ -685,13 +685,13 @@ public class MyResolver {
 		boolean soundex = false;
 
 		
-		double t = 0.4;
-		runMyResolver(t, "ssm", soundex);
-		runMyResolver(t+0.1, "ssm", soundex);
+//		double t = 0.4;
+//		runMyResolver(t, "ssm", soundex);
+//		runMyResolver(t+0.1, "ssm", soundex);
 		
-//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-//			runMyResolver(thresh, "ssm", soundex);
-//		}
+		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+			runMyResolver(thresh, "ssm", soundex);
+		}
 
 	}
 

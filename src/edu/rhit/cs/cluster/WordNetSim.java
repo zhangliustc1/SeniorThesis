@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.util.Version;
@@ -29,14 +30,28 @@ public class WordNetSim {
 		List<String> result = new ArrayList<String>();
 		TokenStream stream = analyzer.tokenStream("", new StringReader(keywords));
 
+		// Testing
+		StandardFilter s = new StandardFilter(stream);
 		try {
-			while (stream.incrementToken()) {
+			while(s.incrementToken()){
 				result.add(((TermAttribute) stream
 						.getAttribute(TermAttribute.class)).term());
 			}
-		} catch (IOException e) {
-			// not thrown b/c we're using a string reader...
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
+		//////
+		
+//		try {
+//			while (stream.incrementToken()) {
+//				result.add(((TermAttribute) stream
+//						.getAttribute(TermAttribute.class)).term());
+//			}
+//		} catch (IOException e) {
+//			// not thrown b/c we're using a string reader...
+//		}
 
 		return result;
 	}
@@ -68,9 +83,13 @@ public class WordNetSim {
 		List<String> l2 = parseKeywords(s2);
 		
 		// now somehow get difference between each element in l1 and l2
+		System.out.println(l1);
+		System.out.println(l2);
 		
 		
-		return 0.0;
+		
+		
+		return this.wordDifference(l1.get(0), l2.get(0));
 	}
 
 	public static void main(String[] args) {
@@ -80,7 +99,7 @@ public class WordNetSim {
 		
 		WordNetSim w = new WordNetSim();
 		
-		System.out.println(w.wordDifference("carry", "lift"));
+		System.out.println(w.phraseDifference("is implemented in", "as performed by"));
 
 	}
 }

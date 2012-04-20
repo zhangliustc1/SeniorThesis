@@ -46,18 +46,27 @@ public class JWSTest
 		Lin lin = ws.getLin();
 		System.out.println("Lin\n");
 // all senses
-		String s1 = "to consider";
-		String s2 = "as think";
+//		String s1 = "consider";
+//		String s2 = "think";
+		String s1 = "is published in";
+		String s2 = "is implemented in";
 		TreeMap<String, Double> 	scores2	=	lin.lin(s1, s2, "v");			// all senses
 		//TreeMap<String, Double> 	scores2	=	lin.lin("apple", 1, "banana", "n"); 	// fixed;all
 		//TreeMap<String, Double> 	scores2	=	lin.lin("apple", "banana", 2, "n"); 	// all;fixed
 		for(String s : scores2.keySet())
 			System.out.println(s + "\t" + scores2.get(s));
+				
 // specific senses
-		System.out.println("\nspecific pair\t=\t" + lin.lin(s1, 1, s2, 1, "v") + "\n");
+		System.out.println("\nspecific pair\t=\t" + lin.lin(s1, 1, s2, 2, "v") + "\n");
 // max.
 		System.out.println("\nhighest score\t=\t" + lin.max(s1, s2, "v") + "\n\n\n");
 
 // ... and so on for any other measure
+		
+
+		
+
+		
+		
 	}
 } // eof
