@@ -20,6 +20,7 @@ import org.apache.lucene.analysis.hunspell.HunspellStemmer;
 import org.apache.lucene.analysis.hunspell.HunspellStemmer.Stem;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.Version;
 
 import edu.sussex.nlp.jws.JWS;
@@ -88,15 +89,6 @@ public class WordNetSim {
 		if (ls.size() == 0){
 			return "[No Stem]";
 		}
-		
-//		if (ls.size() == 2) {
-//			System.out.println(s);
-//			System.out.println("New list. Size: " + ls.size());
-//			for (Stem ss : ls) {
-//				System.out.println(ss.getStemString());
-//			}
-//			System.out.println();
-//		}
 
 		String last = ls.get(ls.size()-1).getStemString();
 		int getMe = 2;
@@ -114,8 +106,39 @@ public class WordNetSim {
 		return last;
 	}
 	
-	
-	private double wordDifference(String s1, String s2){
+	// Get the largest element
+	private String getLongest(List<String> l){
+		String largest = "";
+		int size = -1;
+		for (String s : l){
+			if (s.length() > size){
+				size = s.length();
+				largest = s;
+			}
+		}
+		return largest;
+	}
+
+	public double similarity(String s1, String s2){
+		// Remove stopwords
+		List<String> l1 = parseKeywords(s1); 
+		List<String> l2 = parseKeywords(s2);
+				
+		// Get the largest word and lemmatize it
+		// A lemmatized word is more likely to be
+		// in WordNet. 
+		// The idea behind getting the longest
+		// word is that long words are usually
+		// more meaningful than short words.
+		// TODO: make this smarter instead of just getting longest
+		s1 = this.getStem(this.getLongest(l1));
+		s2 = this.getStem(this.getLongest(l2));
+		
+		System.out.println(s1 + ", " + s2);
+		
+		
+		// Finally, preprocessing out of
+		// the way, do WordNet similarity
 		JiangAndConrath jcn = ws.getJiangAndConrath();
 		
 		// All the different options
@@ -130,26 +153,6 @@ public class WordNetSim {
 //		ws.getWuAndPalmer();
 		
 		return jcn.max(s1, s2, "v");
-		
-	}
-	
-	// This assumes that both input strings are longer than one word. 
-	// One word should also be fine though. 
-	// Assume that all words are verbs. Hmm. 
-	private double phraseDifference(String s1, String s2){
-		List<String> l1 = parseKeywords(s1); 
-		List<String> l2 = parseKeywords(s2);
-		
-		// now somehow get difference between each element in l1 and l2
-		System.out.println(l1);
-		System.out.println(l2);
-				
-		return this.wordDifference(l1.get(0), l2.get(0));
-	}
-
-	public double similarity(String s1, String s2){
-		
-		return 0.0;
 	}
 	
 	public static void main(String[] args) {
@@ -165,7 +168,7 @@ public class WordNetSim {
 		
 		
 		
-		//System.out.println(w.phraseDifference("is implemented in", "as performed by"));
+		System.out.println(w.similarity(s, t));
 
 
 		
