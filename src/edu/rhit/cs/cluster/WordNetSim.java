@@ -144,7 +144,11 @@ public class WordNetSim {
 		// Remove stopwords
 		List<String> l1 = parseKeywords(s1); 
 		List<String> l2 = parseKeywords(s2);
-				
+		
+		if(l1.size() == 0 || l2.size() == 0){
+			return 0.0;
+		}
+		
 		// Compares so the sort is descending
 		class LenComparator implements Comparator<String>{
 		    @Override
@@ -190,6 +194,10 @@ public class WordNetSim {
 //		ws.getResnik();
 //		ws.getWuAndPalmer();
 		
+		if (s1.equals(s2)){
+			return 1;
+		}
+		
 		return jcn.max(s1, s2, "v");
 	}
 	
@@ -200,8 +208,8 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "alway";
-		String t = "under";
+		String s = "am implementing";
+		String t = "was implemented";
 		
 		
 	

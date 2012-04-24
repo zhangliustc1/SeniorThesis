@@ -617,6 +617,7 @@ public class MyResolver {
 		
 		double prob = esp.getProbabilityStringCooccurrenceNormalized(k, n1, n2, isEntity);
 		
+		WordNetSim wns = new WordNetSim();
 		
 		if(this.method == "ssm"){
 			// From yates code
@@ -633,7 +634,8 @@ public class MyResolver {
 		}else if (this.method == "max"){
 			
 			return Math.max(sim2,  prob);
-			
+		}else if(this.method == "wn"){
+			return wns.similarity(t.s1, t.s2);
 		}else{
 		
 			System.out.println("Warning: running default scorer!");
