@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -70,8 +72,8 @@ public class WordNetSim {
 		
 		try {
 			while (stream.incrementToken()) {
-				result.add(((TermAttribute) stream
-						.getAttribute(TermAttribute.class)).term());
+				String s = ((TermAttribute) stream.getAttribute(TermAttribute.class)).term();				
+				result.add(s);
 			}
 		} catch (IOException e) {
 			// not thrown b/c we're using a string reader...
@@ -107,16 +109,35 @@ public class WordNetSim {
 	}
 	
 	// Get the largest element
-	private String getLongest(List<String> l){
-		String largest = "";
-		int size = -1;
-		for (String s : l){
-			if (s.length() > size){
-				size = s.length();
-				largest = s;
-			}
+//	private String getLongest(List<String> l){
+//		String largest = "";
+//		int size = -1;
+//		for (String s : l){
+//			if (s.length() > size){
+//				size = s.length();
+//				largest = s;
+//			}
+//		}
+//		return largest;
+//	}
+	
+	// This finds the first string that has 
+	// a meaningful stem, [and has the possibility
+	// of being a verb]
+	private String getBest(List<String> l){
+		String s = this.getStem(l.get(0));
+		
+		// TODO: add logic that checks for verbishness
+		
+		int ind = 1;
+		boolean bad = s == "[No Stem]";
+		while(bad){
+			s = this.getStem(l.get(ind));
+			
+			bad = s == "[No Stem]";
+			ind++;
 		}
-		return largest;
+		return s;
 	}
 
 	public double similarity(String s1, String s2){
@@ -124,6 +145,24 @@ public class WordNetSim {
 		List<String> l1 = parseKeywords(s1); 
 		List<String> l2 = parseKeywords(s2);
 				
+		// Compares so the sort is descending
+		class LenComparator implements Comparator<String>{
+		    @Override
+		    public int compare(String o1, String o2) {  
+		      if (o1.length() < o2.length()) {
+		         return 1;
+		      } else if (o1.length() > o2.length()) {
+		         return -1;
+		      } else { 
+		         return 0;
+		      }
+		    }
+		}
+		
+		LenComparator lc = new LenComparator();
+		Collections.sort(l1, lc);
+		Collections.sort(l2, lc);
+		
 		// Get the largest word and lemmatize it
 		// A lemmatized word is more likely to be
 		// in WordNet. 
@@ -131,11 +170,10 @@ public class WordNetSim {
 		// word is that long words are usually
 		// more meaningful than short words.
 		// TODO: make this smarter instead of just getting longest
-		s1 = this.getStem(this.getLongest(l1));
-		s2 = this.getStem(this.getLongest(l2));
+		s1 = this.getBest(l1);
+		s2 = this.getBest(l2);
 		
-		System.out.println(s1 + ", " + s2);
-		
+		System.out.println("S1: " + s1 + ", S2: " + s2);
 		
 		// Finally, preprocessing out of
 		// the way, do WordNet similarity
@@ -162,12 +200,11 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "is implemented in";
-		String t = "as performed by";
+		String s = "alway";
+		String t = "under";
 		
 		
-		
-		
+	
 		System.out.println(w.similarity(s, t));
 
 
