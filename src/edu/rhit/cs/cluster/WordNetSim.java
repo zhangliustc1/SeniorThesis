@@ -109,6 +109,7 @@ public class WordNetSim {
 		}
 		
 		// Include some logic about it being a verb.
+		
 	
 		return last;
 	}
@@ -146,6 +147,11 @@ public class WordNetSim {
 		return this.wordDifference(l1.get(0), l2.get(0));
 	}
 
+	public double similarity(String s1, String s2){
+		
+		return 0.0;
+	}
+	
 	public static void main(String[] args) {
 
 //		List<String> l = parseKeywords(",, you are cool MAN");
@@ -153,39 +159,47 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
+		String s = "is implemented in";
+		String t = "as performed by";
+		
+		
+		
+		
 		//System.out.println(w.phraseDifference("is implemented in", "as performed by"));
 
 
 		
 			
-		try {
-			// Open the file that is the first
-			// command line parameter
-			FileInputStream fstream = new FileInputStream(
-					"/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/yates_gold_relations.txt");
-			// Get the object of DataInputStream
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			// Read File Line By Line
-			while ((strLine = br.readLine()) != null) {
-				// Print the content on the console		
-				String justText = strLine.split(" :::: ")[0];
-				
-				List<String> l2 = parseKeywords(justText);
-				if (l2.size() == 0){
-					continue;
-				}
-				//System.out.println(l2);
-				
-				System.out.println(w.getStem(l2.get(l2.size()-1)));
-			}
-			// Close the input stream
-			in.close();
-		} catch (Exception e) {// Catch exception if any
-			System.out.println(e);
-			System.err.println("Error: " + e.getMessage());
-		}	
+//		try {
+//			// Open the file that is the first
+//			// command line parameter
+//			FileInputStream fstream = new FileInputStream(
+//					"/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/yates_gold_relations.txt");
+//			// Get the object of DataInputStream
+//			DataInputStream in = new DataInputStream(fstream);
+//			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+//			String strLine;
+//			// Read File Line By Line
+//			while ((strLine = br.readLine()) != null) {
+//				// Print the content on the console		
+//				String justText = strLine.split(" :::: ")[0];
+//				
+//				List<String> l2 = parseKeywords(justText);
+//				if (l2.size() == 0){
+//					continue;
+//				}
+//				//System.out.println(l2);
+//				
+//				System.out.println(w.getStem(l2.get(l2.size()-1)));
+//			}
+//			// Close the input stream
+//			in.close();
+//		} catch (Exception e) {// Catch exception if any
+//			System.out.println(e);
+//			System.err.println("Error: " + e.getMessage());
+//		}	
+		
+		
 		
 	
 	}
