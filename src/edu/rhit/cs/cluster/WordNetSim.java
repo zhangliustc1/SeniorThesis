@@ -1,13 +1,12 @@
 package edu.rhit.cs.cluster;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import org.apache.lucene.analysis.hunspell.HunspellStemmer;
 import org.apache.lucene.analysis.hunspell.HunspellStemmer.Stem;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
-import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.Version;
 
 import edu.sussex.nlp.jws.JWS;
@@ -31,7 +29,9 @@ import edu.sussex.nlp.jws.JiangAndConrath;
 public class WordNetSim {
 	JWS ws;
 	HunspellStemmer hStemmer;
-	
+
+	private static final PrintStream SYSTEM_OUT = System.out;
+	private static final PrintStream NULL_OUT = new PrintStream(new NullOutputStream());
 	
 	public WordNetSim() {
 		String dir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/dummywordnet";
@@ -101,9 +101,6 @@ public class WordNetSim {
 			last = ls.get(ls.size()-getMe).getStemString();
 			getMe++;
 		}
-		
-		// Include some logic about it being a verb.
-		
 	
 		return last;
 	}
@@ -132,6 +129,9 @@ public class WordNetSim {
 		int ind = 1;
 		boolean bad = s == "[No Stem]";
 		while(bad){
+			if (ind >= l.size()-1){
+				break;
+			}
 			s = this.getStem(l.get(ind));
 			
 			bad = s == "[No Stem]";
@@ -177,7 +177,7 @@ public class WordNetSim {
 		s1 = this.getBest(l1);
 		s2 = this.getBest(l2);
 		
-		System.out.println("S1: " + s1 + ", S2: " + s2);
+		//System.out.println("S1: " + s1 + ", S2: " + s2);
 		
 		// Finally, preprocessing out of
 		// the way, do WordNet similarity
@@ -198,7 +198,11 @@ public class WordNetSim {
 			return 1;
 		}
 		
-		return jcn.max(s1, s2, "v");
+		System.setOut(NULL_OUT);
+		double d = jcn.max(s1, s2, "v"); 
+		System.setOut(SYSTEM_OUT);
+		
+		return d;
 	}
 	
 	public static void main(String[] args) {
@@ -208,13 +212,12 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "am implementing";
+		String s = "fff";
 		String t = "was implemented";
-		
-		
-	
+			
 		System.out.println(w.similarity(s, t));
 
+		
 
 		
 			
@@ -251,4 +254,25 @@ public class WordNetSim {
 		
 	
 	}
+	
+	private static class NullOutputStream extends OutputStream {
+	    @Override
+	    public void write(int b){
+	         return;
+	    }
+	    @Override
+	    public void write(byte[] b){
+	         return;
+	    }
+	    @Override
+	    public void write(byte[] b, int off, int len){
+	         return;
+	    }
+	    public NullOutputStream(){
+	    }
+	}
+	
+	
 }
+
+

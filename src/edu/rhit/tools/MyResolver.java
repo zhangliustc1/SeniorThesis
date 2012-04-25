@@ -31,13 +31,13 @@ public class MyResolver {
 
 	
 
-    //    public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
-    public static String workdir = "/Users/stu2009/mayhewsw/SeniorThesis/";
+        public static String workdir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/";
+    //public static String workdir = "/Users/stu2009/mayhewsw/SeniorThesis/";
 
 	// This variable decides on the data set. It is necessary
 	// because there are various changes to the code if it 
 	// is set
-	private static boolean artificial = true;
+	private static boolean artificial = false;
 	
 	public static String infile = artificial ? workdir + "justgoldArtificial.txt" : workdir + "justgold.txt";
 
@@ -47,6 +47,7 @@ public class MyResolver {
 	public static String objgoldfile = artificial ? workdir + "object_scoring_clusters_artificial.txt" : workdir + "yates_gold_objects.txt";
 	public static String relgoldfile = artificial ? workdir + "relation_scoring_clusters_artificial.txt" : workdir + "yates_gold_relations.txt";
 
+	public WordNetSim wns;
 	
 	public static String sep = " :::: ";
 
@@ -161,7 +162,10 @@ public class MyResolver {
 
 	// This is copied almost exactly out of the paper. pp269.
 	public int ClusterAlgorithm(double threshold) {
-
+		
+		// Set up wordnetsim
+		wns = new WordNetSim();
+		
 		// E is all assertions. Array? Arraylist? of String [] ? Only need to
 		// iterate. No insert or delete
 		ArrayList<String[]> E = getData(infile);
@@ -617,8 +621,6 @@ public class MyResolver {
 		
 		double prob = esp.getProbabilityStringCooccurrenceNormalized(k, n1, n2, isEntity);
 		
-		WordNetSim wns = new WordNetSim();
-		
 		if(this.method == "ssm"){
 			// From yates code
 			return sim2;
@@ -635,7 +637,12 @@ public class MyResolver {
 			
 			return Math.max(sim2,  prob);
 		}else if(this.method == "wn"){
-			return wns.similarity(t.s1, t.s2);
+			// Wordnet similarity only works for relations. 
+			if (isEntity){
+				return sim2;
+			}else{
+				return this.wns.similarity(t.s1, t.s2);
+			}
 		}else{
 		
 			System.out.println("Warning: running default scorer!");
@@ -692,7 +699,7 @@ public class MyResolver {
 //		runMyResolver(t+0.1, "ssm", soundex);
 		
 		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-			runMyResolver(thresh, "ssm", soundex);
+			runMyResolver(thresh, "wn", soundex);
 		}
 
 	}
