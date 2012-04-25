@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -177,7 +178,7 @@ public class WordNetSim {
 		s1 = this.getBest(l1);
 		s2 = this.getBest(l2);
 		
-		//System.out.println("S1: " + s1 + ", S2: " + s2);
+		System.out.println("S1: " + s1 + ", S2: " + s2);
 		
 		// Finally, preprocessing out of
 		// the way, do WordNet similarity
@@ -199,7 +200,7 @@ public class WordNetSim {
 		}
 		
 		System.setOut(NULL_OUT);
-		double d = jcn.max(s1, s2, "v"); 
+		double d = jcn.max(s1, s2, "n"); 
 		System.setOut(SYSTEM_OUT);
 		
 		return d;
@@ -212,8 +213,8 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "fff";
-		String t = "was implemented";
+		String s = "get_out_of";
+		String t = "is pulling";
 			
 		System.out.println(w.similarity(s, t));
 

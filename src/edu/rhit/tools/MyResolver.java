@@ -61,7 +61,7 @@ public class MyResolver {
 	
 	public boolean mutrec = true;
 
-	private int numMerges = 1;
+	private int numMerges = 4;
 	private boolean stopwordRemove = false;
 	
 	// This should be a number between 0 and 1
@@ -694,13 +694,13 @@ public class MyResolver {
 		boolean soundex = false;
 
 		
-//		double t = 0.4;
-//		runMyResolver(t, "ssm", soundex);
+		double t = 0.5;
+		runMyResolver(t, "wn", soundex);
 //		runMyResolver(t+0.1, "ssm", soundex);
 		
-		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-			runMyResolver(thresh, "wn", soundex);
-		}
+//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+//			runMyResolver(thresh, "wn", soundex);
+//		}
 
 	}
 
