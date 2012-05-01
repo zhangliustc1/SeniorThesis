@@ -641,7 +641,12 @@ public class MyResolver {
 			if (isEntity){
 				return sim2;
 			}else{
-				return this.wns.similarity(t.s1, t.s2);
+				double wnssim = this.wns.similarity(t.s1, t.s2);
+				if (wnssim == 0){
+					return sim2; // sim2 is so far the best metric. Might consider using a different one. 
+				}else{
+					return wnssim;
+				}
 			}
 		}else{
 		

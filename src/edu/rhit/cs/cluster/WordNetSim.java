@@ -40,28 +40,28 @@ public class WordNetSim {
 		String dir = "/home/stephen/Documents/Classes/Fall2011/NLP/resolver-export/MyReverbData/dummywordnet";
 		this.ws = new JWS(dir, "3.0");
 		
-		InputStream aff;
-		InputStream dic;
-		try {
-			aff = new FileInputStream(new File("/usr/share/hunspell/en_US.aff"));
-			dic = new FileInputStream(new File("/usr/share/hunspell/en_US.dic"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		}
+//		InputStream aff;
+//		InputStream dic;
+//		try {
+//			aff = new FileInputStream(new File("/usr/share/hunspell/en_US.aff"));
+//			dic = new FileInputStream(new File("/usr/share/hunspell/en_US.dic"));
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			return;
+//		}
 		
-		HunspellDictionary hd;
-		try {
-			hd = new HunspellDictionary(aff, dic);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return;
-		}
+//		HunspellDictionary hd;
+//		try {
+//			hd = new HunspellDictionary(aff, dic);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return;
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//			return;
+//		}
 		
-		this.hStemmer = new HunspellStemmer(hd);
+//		this.hStemmer = new HunspellStemmer(hd);
 		
 		this.jwnlStemmer = new JWNLStemmer();
 		
@@ -163,7 +163,8 @@ public class WordNetSim {
 	}
 
 	public double similarity(String s1, String s2){
-		System.out.println();
+//		System.out.println();
+//		System.out.println(s1 + ", " + s2);
 		
 //		// Remove stopwords
 //		List<String> l1 = parseKeywords(s1); 
@@ -174,7 +175,7 @@ public class WordNetSim {
 		ArrayList<String> l2 = this.jwnlStemmer.filterAndStem(s2);
 		
 		if(l1.size() == 0 || l2.size() == 0){
-			System.out.println("empty list");
+			//System.out.println("empty list");
 			return 0.0;
 		}
 		
@@ -229,13 +230,13 @@ public class WordNetSim {
 			return 1;
 		}
 		
-		System.out.println("S1: " + s1 + ", S2: " + s2);
+//		System.out.println("S1: " + s1 + ", S2: " + s2);
 		
 		
 		
-		//System.setOut(NULL_OUT);
+		System.setOut(NULL_OUT);
 		double d = jcn.max(s1, s2, "v"); 
-		//System.setOut(SYSTEM_OUT);
+		System.setOut(SYSTEM_OUT);
 		
 		return d;
 	}
@@ -247,8 +248,8 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "to have";
-		String t = "amuse";
+		String s = "he has the";
+		String t = "amusing";
 			
 		System.out.println(w.similarity(s, t));
 
