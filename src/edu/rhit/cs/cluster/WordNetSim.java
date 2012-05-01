@@ -68,6 +68,22 @@ public class WordNetSim {
 	public static List<String> parseKeywords(String keywords) {
 		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_29);
 		
+		System.out.println("Keywords: " + keywords);
+		
+		// TODO: Some fancy regex replace of standard irregular verbs
+		// will be -> am
+		// were -> am
+		// to be -> am
+		keywords = keywords.replaceAll("will be", "am");
+		keywords = keywords.replaceAll("were", "am");
+		keywords = keywords.replaceAll("to be", "am");
+		keywords = keywords.replaceAll("would", "");
+		keywords = keywords.replaceAll("had", "have"); // could be dangerous
+		keywords = keywords.replaceAll(" get ", " have ");
+		//keywords = keywords.replaceAll("", "can");
+		
+		
+		
 		List<String> result = new ArrayList<String>();
 		TokenStream stream = analyzer.tokenStream("", new StringReader(keywords));
 		
@@ -142,11 +158,14 @@ public class WordNetSim {
 	}
 
 	public double similarity(String s1, String s2){
+		System.out.println();
+		
 		// Remove stopwords
 		List<String> l1 = parseKeywords(s1); 
 		List<String> l2 = parseKeywords(s2);
 		
 		if(l1.size() == 0 || l2.size() == 0){
+			System.out.println("empty list");
 			return 0.0;
 		}
 		
@@ -177,9 +196,7 @@ public class WordNetSim {
 		// TODO: make this smarter instead of just getting longest
 		s1 = this.getBest(l1);
 		s2 = this.getBest(l2);
-		
-		System.out.println("S1: " + s1 + ", S2: " + s2);
-		
+				
 		// Finally, preprocessing out of
 		// the way, do WordNet similarity
 		JiangAndConrath jcn = ws.getJiangAndConrath();
@@ -199,9 +216,13 @@ public class WordNetSim {
 			return 1;
 		}
 		
-		System.setOut(NULL_OUT);
-		double d = jcn.max(s1, s2, "n"); 
-		System.setOut(SYSTEM_OUT);
+		System.out.println("S1: " + s1 + ", S2: " + s2);
+		
+		
+		
+		//System.setOut(NULL_OUT);
+		double d = jcn.max(s1, s2, "v"); 
+		//System.setOut(SYSTEM_OUT);
 		
 		return d;
 	}
@@ -213,8 +234,8 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "get_out_of";
-		String t = "is pulling";
+		String s = "to have";
+		String t = "amuse";
 			
 		System.out.println(w.similarity(s, t));
 
