@@ -24,12 +24,14 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.util.Version;
 
+import edu.rhit.tools.JWNLStemmer;
 import edu.sussex.nlp.jws.JWS;
 import edu.sussex.nlp.jws.JiangAndConrath;
 
 public class WordNetSim {
 	JWS ws;
 	HunspellStemmer hStemmer;
+	JWNLStemmer jwnlStemmer;
 
 	private static final PrintStream SYSTEM_OUT = System.out;
 	private static final PrintStream NULL_OUT = new PrintStream(new NullOutputStream());
@@ -61,6 +63,9 @@ public class WordNetSim {
 		
 		this.hStemmer = new HunspellStemmer(hd);
 		
+		this.jwnlStemmer = new JWNLStemmer();
+		
+		
 	}
 
 	// Given a string (which should have separable spaces in it)
@@ -74,12 +79,12 @@ public class WordNetSim {
 		// will be -> am
 		// were -> am
 		// to be -> am
-		keywords = keywords.replaceAll("will be", "am");
-		keywords = keywords.replaceAll("were", "am");
-		keywords = keywords.replaceAll("to be", "am");
-		keywords = keywords.replaceAll("would", "");
-		keywords = keywords.replaceAll("had", "have"); // could be dangerous
-		keywords = keywords.replaceAll(" get ", " have ");
+//		keywords = keywords.replaceAll("will be", "am");
+//		keywords = keywords.replaceAll("were", "am");
+//		keywords = keywords.replaceAll("to be", "am");
+//		keywords = keywords.replaceAll("would", "");
+//		keywords = keywords.replaceAll("had", "have"); // could be dangerous
+//		keywords = keywords.replaceAll(" get ", " have ");
 		//keywords = keywords.replaceAll("", "can");
 		
 		
@@ -160,16 +165,20 @@ public class WordNetSim {
 	public double similarity(String s1, String s2){
 		System.out.println();
 		
-		// Remove stopwords
-		List<String> l1 = parseKeywords(s1); 
-		List<String> l2 = parseKeywords(s2);
+//		// Remove stopwords
+//		List<String> l1 = parseKeywords(s1); 
+//		List<String> l2 = parseKeywords(s2);
+		
+		// Produces a list of only verbs.
+		ArrayList<String> l1 = this.jwnlStemmer.filterAndStem(s1);
+		ArrayList<String> l2 = this.jwnlStemmer.filterAndStem(s2);
 		
 		if(l1.size() == 0 || l2.size() == 0){
 			System.out.println("empty list");
 			return 0.0;
 		}
 		
-		// Compares so the sort is descending
+		// Compares so the sort is descending (largest first)
 		class LenComparator implements Comparator<String>{
 		    @Override
 		    public int compare(String o1, String o2) {  
@@ -186,6 +195,10 @@ public class WordNetSim {
 		LenComparator lc = new LenComparator();
 		Collections.sort(l1, lc);
 		Collections.sort(l2, lc);
+
+		s1 = l1.get(0);
+		s2 = l2.get(0);
+		
 		
 		// Get the largest word and lemmatize it
 		// A lemmatized word is more likely to be
@@ -193,9 +206,9 @@ public class WordNetSim {
 		// The idea behind getting the longest
 		// word is that long words are usually
 		// more meaningful than short words.
-		// TODO: make this smarter instead of just getting longest
-		s1 = this.getBest(l1);
-		s2 = this.getBest(l2);
+//		// TODO: make this smarter instead of just getting longest
+//		s1 = this.getBest(l1);
+//		s2 = this.getBest(l2);
 				
 		// Finally, preprocessing out of
 		// the way, do WordNet similarity
@@ -277,7 +290,7 @@ public class WordNetSim {
 	
 	}
 	
-	private static class NullOutputStream extends OutputStream {
+	public static class NullOutputStream extends OutputStream {
 	    @Override
 	    public void write(int b){
 	         return;
@@ -296,5 +309,6 @@ public class WordNetSim {
 	
 	
 }
+
 
 

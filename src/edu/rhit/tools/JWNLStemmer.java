@@ -2,10 +2,12 @@ package edu.rhit.tools;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Vector;
+
+import edu.rhit.cs.cluster.WordNetSim;
 
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
@@ -19,6 +21,9 @@ import net.didion.jwnl.dictionary.MorphologicalProcessor;
 
 public class JWNLStemmer {
 
+	private static final PrintStream SYSTEM_OUT = System.out;
+	private static final PrintStream NULL_OUT = new PrintStream(new WordNetSim.NullOutputStream());
+	
 	//private int MaxWordLength = 50;
 	private Dictionary dict;
 	private MorphologicalProcessor morph;
@@ -36,12 +41,16 @@ public class JWNLStemmer {
 		
 		try
 		{
+			
+			 
 			JWNL.initialize(new FileInputStream("JWNLproperties.xml"));
 			this.dict = Dictionary.getInstance();
 			this.morph = this.dict.getMorphologicalProcessor();
 			// ((AbstractCachingDictionary)dic).
 			//	setCacheCapacity (10000);
 			this.isInitialized = true;
+			
+			
 		}
 		catch ( FileNotFoundException e )
 		{
@@ -76,6 +85,9 @@ public class JWNLStemmer {
 		IndexWord w;
 		try
 		{
+			System.setOut(NULL_OUT);
+			System.setOut(SYSTEM_OUT);
+			
 			w = morph.lookupBaseForm( POS.VERB, word );
 			if ( w != null )
 				return w.getLemma().toString ();
