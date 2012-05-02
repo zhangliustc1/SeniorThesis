@@ -699,12 +699,12 @@ public class MyResolver {
 		boolean soundex = false;
 
 		
-		double t = 0.2;
-		runMyResolver(t, "wn", soundex);
+//		double t = 0.2;
+//		runMyResolver(t, "wn", soundex);
 		
-//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-//			runMyResolver(thresh, "wn", soundex);
-//		}
+		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+			runMyResolver(thresh, "wn", soundex);
+		}
 
 	}
 
