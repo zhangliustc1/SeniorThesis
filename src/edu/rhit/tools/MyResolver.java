@@ -591,10 +591,18 @@ public class MyResolver {
 	}
 
 	private double similarity(Tuple t, HashMap<String, HashSet<String>> propCounts) {
+		
+		boolean isEntity = true;
+		
+		// Either contains s1 or s2. One should be enough though.
+		if (this.Relations.contains(t.s1)){
+			isEntity = false;
+		}
+		
 		// SSM
 		//int d = SimpleSSM.LevenshteinDistance(t.s1, t.s2);
 		StringSimilarityModel ssm = new StringSimilarityModel();
-		double sim2 = ssm.getSimilarity(t.s1, t.s2);
+		double ssmProb = ssm.getSimilarity(t.s1, t.s2, isEntity);
 
 		// ESP
 		HashSet<String> props1 = new HashSet<String>();	
@@ -612,38 +620,33 @@ public class MyResolver {
 		int k = props1.size();  //intersection of props1 and props2
 		
 		ESPModel esp = new ESPModel();
-		boolean isEntity = true;
+
 		
-		// Either contains s1 or s2. One should be enough though.
-		if (this.Relations.contains(t.s1)){
-			isEntity = false;
-		}
-		
-		double prob = esp.getProbabilityStringCooccurrenceNormalized(k, n1, n2, isEntity);
+		double espProb = esp.getProbabilityStringCooccurrenceNormalized(k, n1, n2, isEntity);
 		
 		if(this.method == "ssm"){
 			// From yates code
-			return sim2;
+			return ssmProb;
 		}else if(this.method  == "esp"){
-			return prob;	
+			return espProb;	
 		}else if(this.method == "comb"){
 			
 			double prior = 0.5;
-			double num =  prob * sim2 * (1 - prior);
-			double denom = num + (1-prob)*(1-sim2)*(prior);
+			double num =  espProb * ssmProb * (1 - prior);
+			double denom = num + (1-espProb)*(1-ssmProb)*(prior);
 			return num / denom;
 			
 		}else if (this.method == "max"){
 			
-			return Math.max(sim2,  prob);
+			return Math.max(ssmProb,  espProb);
 		}else if(this.method == "wn"){
 			// Wordnet similarity only works for relations. 
 			if (isEntity){
-				return sim2;
+				return ssmProb;
 			}else{
 				double wnssim = this.wns.similarity(t.s1, t.s2);
 				if (wnssim == 0){
-					return sim2; // sim2 is so far the best metric. Might consider using a different one. 
+					return ssmProb; // sim2 is so far the best metric. Might consider using a different one. 
 				}else{
 					return wnssim;
 				}
@@ -695,16 +698,21 @@ public class MyResolver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	
+		long startTime = System.currentTimeMillis();
+		
 		boolean soundex = false;
 
 		
-//		double t = 0.2;
-//		runMyResolver(t, "wn", soundex);
 		
-		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-			runMyResolver(thresh, "wn", soundex);
+//		double t = 1;
+//		runMyResolver(t, "comb", soundex);
+		
+		for (double thresh = 0.8; thresh < 1; thresh += 0.1) {
+			runMyResolver(thresh, "ssm", soundex);
 		}
+		
+		long endTime = System.currentTimeMillis();
+		System.out.println("Total execution time: " + (endTime-startTime));
 
 	}
 

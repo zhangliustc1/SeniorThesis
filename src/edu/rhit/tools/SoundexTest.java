@@ -16,7 +16,7 @@ public class SoundexTest {
 //			
 //			System.out.println(s.encode("lacks the"));
 //			System.out.println(s.encode("lacks te"));
-			System.out.println(s.getSimilarityExplained("the rain in spain falls mainly on the plain", "the rine in spine falls minly on the pline"));
+			//System.out.println(s.getSimilarityExplained("the rain in spain falls mainly on the plain", "the rine in spine falls minly on the pline"));
 			
 			
 			System.out.println(rs.difference("Stephen", "Baclkbhekj"));
@@ -24,6 +24,9 @@ public class SoundexTest {
 			
 			System.out.println(rs.encode("lacks the"));
 			System.out.println(rs.encode("lacks te"));
+			
+			System.out.println(rs.encode("President"));
+			System.out.println(rs.encode("Prisident"));
 			
 
 			System.out.println(rs.soundex("the rain in spain falls mainly on the plain"));

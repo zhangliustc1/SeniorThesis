@@ -398,8 +398,8 @@ public class StringSimilarityModel {
 		MongeElkan me = new MongeElkan();
 		StringSimilarityModel ssm = new StringSimilarityModel();
 		
-		String [] s1 = {"U.S.", "Amnesty International", "Microsoft Corp.", "Microsoft", "State", "Jesus", "United States", "Britain", "World Bank", "North Carolina", "BAA", "XML-RPC", "West Virginia"};
-		String [] s2 = {"US", "Center", "Microsoft", "Mac", "United States", "Messiah", "U.S.", "Spain", "World Trade Organization", "South Carolina", "Almanac", "DOM", "Virginia"};
+		String [] s1 = {"U.S.", "Amnesty International", "Microsoft Corp.", "Microsoft", "State", "Jesus", "United States", "Britain", "World Bank", "North Carolina", "BAA", "XML-RPC", "West Virginia", "Environmental Protection Agency"};
+		String [] s2 = {"US", "Center", "Microsoft", "Mac", "United States", "Messiah", "U.S.", "Spain", "World Trade Organization", "South Carolina", "Almanac", "DOM", "Virginia", "EPA"};
 		
 		for(int i=0; i<s1.length && i<s2.length; i++) {
 			System.out.println(s1[i] + ", " + s2[i]);
@@ -407,7 +407,9 @@ public class StringSimilarityModel {
 			System.out.println(swg.getSimilarity(s1[i], s2[i]));
 			System.out.println(me.getSimilarity(s1[i], s2[i]));
 			System.out.println(ssm.getSubsequenceSimilarity(s1[i], s2[i]));
+			System.out.println(ssm.getNormalizedSubsequenceSimilarity(s1[i], s2[i]));
 			//System.out.println(ssm.getPerWordSubsequenceSimilarity(s1[i],s2[i]));
+			System.out.println();
 		}
 		
 	}
