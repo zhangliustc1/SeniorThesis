@@ -164,7 +164,7 @@ public class MyResolver {
 	public int ClusterAlgorithm(double threshold) {
 		
 		// Set up wordnetsim
-		wns = new WordNetSim();
+//		wns = new WordNetSim();
 		
 		// E is all assertions. Array? Arraylist? of String [] ? Only need to
 		// iterate. No insert or delete
