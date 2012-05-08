@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import edu.washington.cs.uei.util.GeneralUtility;
 
+import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.MongeElkan;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.NeedlemanWunch;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.SmithWaterman;
@@ -22,11 +23,22 @@ public class StringSimilarityModel {
 	
 	private NeedlemanWunch nw = new NeedlemanWunch(0.5f);
 	private SmithWaterman sw = null;
+	private Levenshtein lev = new Levenshtein();
 	private SmithWatermanGotoh swg = new SmithWatermanGotoh();
 	private MongeElkan me = new MongeElkan();
 	private GeneralUtility gu = new GeneralUtility();
 	
 	private static final double Beta = 2.0;
+	
+	
+	public double getDistanceSim(String s, String t, boolean isEntity){
+		if (isEntity){
+			return this.me.getSimilarity(s, t);
+		}
+		else{
+			return lev.getSimilarity(s, t);
+		}
+	}
 	
 	public double getRelationSimilarity(String s, String t) 
 	{
@@ -333,6 +345,7 @@ public class StringSimilarityModel {
 	
 	
 	public double getNormalizedSubsequenceSimilarity(String s, String t) {
+		// Remove dots
 		String shorter = s.replaceAll("\\.", "");
 		String longer = t.replaceAll("\\.", "");
 		if(shorter.length()>longer.length()) {
@@ -340,6 +353,7 @@ public class StringSimilarityModel {
 			longer = s.replaceAll("\\.", "");
 		}
 		
+		// Get the longest subsequence shared between them
 		//int subSeqSize = getLongestSubsequenceSize(shorter, longer);
 		double subSeqSize = getLongestNonconsecutivePenalizedSubsequenceSize(shorter, longer);
 		
@@ -408,6 +422,7 @@ public class StringSimilarityModel {
 			System.out.println(me.getSimilarity(s1[i], s2[i]));
 			System.out.println(ssm.getSubsequenceSimilarity(s1[i], s2[i]));
 			System.out.println(ssm.getNormalizedSubsequenceSimilarity(s1[i], s2[i]));
+			System.out.println(ssm.getDistanceSim(s1[i], s2[i], false));
 			//System.out.println(ssm.getPerWordSubsequenceSimilarity(s1[i],s2[i]));
 			System.out.println();
 		}

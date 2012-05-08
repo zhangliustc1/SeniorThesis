@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import org.apache.commons.codec.language.RefinedSoundex;
 
 import edu.rhit.cs.cluster.ESPModel;
+import edu.rhit.cs.cluster.SimpleSSM;
 import edu.rhit.cs.cluster.WordNetSim;
 import edu.washington.cs.uei.disktable.BasicDiskTable;
 import edu.washington.cs.uei.model.StringSimilarityModel;
@@ -599,10 +600,10 @@ public class MyResolver {
 			isEntity = false;
 		}
 		
-		// SSM
-		//int d = SimpleSSM.LevenshteinDistance(t.s1, t.s2);
+		// SSM		
 		StringSimilarityModel ssm = new StringSimilarityModel();
-		double ssmProb = ssm.getSimilarity(t.s1, t.s2, isEntity);
+		//double ssmProb = ssm.getSimilarity(t.s1, t.s2, isEntity);
+		double ssmProb = ssm.getDistanceSim(t.s1, t.s2, isEntity);
 
 		// ESP
 		HashSet<String> props1 = new HashSet<String>();	
