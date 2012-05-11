@@ -708,7 +708,7 @@ public class MyResolver {
 //		double t = 1;
 //		runMyResolver(t, "comb", soundex);
 		
-		for (double thresh = 0.8; thresh < 1; thresh += 0.1) {
+		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
 			runMyResolver(thresh, "ssm", soundex);
 		}
 		

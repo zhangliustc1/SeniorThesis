@@ -378,7 +378,8 @@ public class ESPModel {
 					double score = probCooc / (1 - probCooc) * (1 - priorProb)/ priorProb;
 					int even = findEvenLikelihoodThreshold(ni, nj);
 					
-					String s = String.format("(%d, %d, %3d): %8.4f,  %d, normProb = %.2f, norm with prior = %.2f", ni, nj, k, score, even, normProb, normProbPrior );
+					//String s = String.format("(%d, %d, %3d): %8.4f,  %d, normProb = %.2f, norm with prior = %.2f", ni, nj, k, score, even, normProb, normProbPrior );
+					String s = String.format("(%d, %d, %3d): %8.4f,  %d, normProb = %.2f", ni, nj, k, score, even, probCooc );
 					System.out.println(s);
 					//System.out.println("(" + ni + ", " + nj + ", " + k + "): " + score + ", " + even + ", normProb = " + normProb  + ", norm with prior = " + normProbPrior);
 					
