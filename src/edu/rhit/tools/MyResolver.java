@@ -706,13 +706,12 @@ public class MyResolver {
 	 */
 	public static void main(String[] args) {
 		
-//		double t = 0.4;
-//		runMyResolver(t, "ssm", soundex);
-//		runMyResolver(t+0.1, "ssm", soundex);			
+		double t = 0.2;
+		runMyResolver(t, "ssm");
 		
-		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-			runMyResolver(thresh, "ssm");
-		}
+//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+//			runMyResolver(thresh, "ssm");
+//		}
 
 	}
 
