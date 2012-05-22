@@ -98,7 +98,6 @@ public class MyResolver {
 		ArrayList<Tuple> allPairs = new ArrayList<Tuple>();
 		for (int i = 0; i < propList.size(); i++) {
 			for (int j = i + 1; j < propList.size(); j++) {
-
 				// String a = getKeyFromValue(Cluster, propList.get(i));
 				// String b = getKeyFromValue(Cluster, propList.get(j));
 
@@ -701,16 +700,16 @@ public class MyResolver {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 		
-		boolean soundex = false;
+		boolean soundex = true;
 
 		
 		
-//		double t = 1;
-//		runMyResolver(t, "comb", soundex);
+		double t = 0.5;
+		runMyResolver(t, "esp", soundex);
 		
-		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
-			runMyResolver(thresh, "ssm", soundex);
-		}
+//		for (double thresh = 0.1; thresh < 1; thresh += 0.1) {
+//			runMyResolver(thresh, "ssm", soundex);
+//		}
 		
 		long endTime = System.currentTimeMillis();
 		System.out.println("Total execution time: " + (endTime-startTime));

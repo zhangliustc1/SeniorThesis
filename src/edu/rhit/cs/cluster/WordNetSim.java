@@ -73,7 +73,7 @@ public class WordNetSim {
 	public static List<String> parseKeywords(String keywords) {
 		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_29);
 		
-		System.out.println("Keywords: " + keywords);
+		//System.out.println("Keywords: " + keywords);
 		
 		// TODO: Some fancy regex replace of standard irregular verbs
 		// will be -> am
@@ -232,11 +232,13 @@ public class WordNetSim {
 		
 //		System.out.println("S1: " + s1 + ", S2: " + s2);
 		
+		s1 = "explode";
+		s2 = "blow up";
 		
 		
-		System.setOut(NULL_OUT);
+//		System.setOut(NULL_OUT);
 		double d = jcn.max(s1, s2, "v"); 
-		System.setOut(SYSTEM_OUT);
+//		System.setOut(SYSTEM_OUT);
 		
 		return d;
 	}
@@ -248,8 +250,8 @@ public class WordNetSim {
 //		
 		WordNetSim w = new WordNetSim();
 //		
-		String s = "he has the";
-		String t = "amusing";
+		String s = "pulls";
+		String t = "get_out";
 			
 		System.out.println(w.similarity(s, t));
 

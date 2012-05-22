@@ -25,8 +25,8 @@ public class SoundexTest {
 			System.out.println(rs.encode("lacks the"));
 			System.out.println(rs.encode("lacks te"));
 			
-			System.out.println(rs.encode("President"));
-			System.out.println(rs.encode("Prisident"));
+			System.out.println(rs.encode("Astounding"));
+			System.out.println(rs.encode("Astunding"));
 			
 
 			System.out.println(rs.soundex("the rain in spain falls mainly on the plain"));
